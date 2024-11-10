@@ -14,27 +14,27 @@ def parse_json_azure_audit_log(path: str) -> timesketch_object:
     datetime ISO8601 format for example: 2015-07-24T19:01:01+00:00
     timestamp_desc String explaining what type of timestamp it is for example file created
     """
+
+    def _get_ip(dc: dict) -> str | None:
+        try:
+            return dc["Claims"]["Content"]["ipaddr"]
+        except (TypeError, KeyError):
+            ...
+
+    def _zulu_time_to_utc(d: str, form: str):
+        """
+        TODO, not an ideal sulution
+        "2024-11-10T11:14:25.0494189Z" zulu time to UTC
+        """
+        d = d.split(".")[0].removesuffix("Z")
+        if form == "utc":
+            return f"{datetime.strptime(d, "%Y-%m-%dT%H:%M:%S").isoformat()}+00:00"
+        if form == "unix":
+            return datetime.strptime(d, "%Y-%m-%dT%H:%M:%S").strftime("%s")
+        else:
+            raise NotImplementedError
+
     with open(path, "r", encoding="utf-8-sig") as json_file:
-
-        def _get_ip(dc: dict) -> str | None:
-            try:
-                return dc["Claims"]["Content"]["ipaddr"]
-            except (TypeError, KeyError):
-                ...
-
-        def _zulu_time_to_utc(d: str, form: str):
-            """
-            TODO, not an ideal sulution
-            "2024-11-10T11:14:25.0494189Z" zulu time to UTC
-            """
-            d = d.split(".")[0].removesuffix("Z")
-            if form == "utc":
-                return f"{datetime.strptime(d, "%Y-%m-%dT%H:%M:%S").isoformat()}+00:00"
-            if form == "unix":
-                return datetime.strptime(d, "%Y-%m-%dT%H:%M:%S").strftime("%s")
-            else:
-                raise NotImplementedError
-
         dict_json = json.load(json_file)
 
         return [

@@ -20,8 +20,6 @@ def parse_mde_csv(path: str) -> timesketch_object:
         dict_csv = csv.DictReader(csv_file, delimiter=",")
         out_vals: timesketch_object = []
         for r in dict_csv:
-            
-        #return [
             d = {
                 "message": r["Action Type"],
                 "datetime": f"{datetime.strptime(r["Event Time"], "%Y-%m-%dT%H:%M:%S.%f").isoformat()}+00:00", # 2024-11-05T15:19:40.621

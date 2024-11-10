@@ -1,8 +1,8 @@
 import json
 from datetime import datetime
 
-JSON_AZURE_AUDIT = "AzureAuditLog.json"
-TIMESKETCH_JSONL = f"Sketch_{JSON_AZURE_AUDIT.replace(".json", ".jsonl")}"
+JSON_AZURE_ACTIVITY = "AzureActivityLog.json"
+TIMESKETCH_JSONL = f"Sketch_{JSON_AZURE_ACTIVITY.replace(".json", ".jsonl")}"
 type timesketch_object = list[dict[str, str | None]]
 
 
@@ -74,7 +74,7 @@ def create_jsonl(data: timesketch_object) -> None:
 
 def main() -> None:
     """main logic"""
-    tso: timesketch_object = parse_json_azure_audit_log(JSON_AZURE_AUDIT)
+    tso: timesketch_object = parse_json_azure_audit_log(JSON_AZURE_ACTIVITY)
     create_jsonl(tso)
     # print(tso[1])
 
